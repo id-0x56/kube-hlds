@@ -4,12 +4,26 @@ metadata:
   name: {{ include "hlds.fullname" . }}
   labels:
     {{- include "hlds.labels" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - name: {{ include "hlds.name" . }}-tcp
+      port: {{ .Values.service.port }}
+      {{- if hasKey .Values.service "nodePort" }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+      targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
-      name: http
+    - name: {{ include "hlds.name" . }}-udp
+      port: {{ .Values.service.port }}
+      {{- if hasKey .Values.service "nodePort" }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: UDP
   selector:
     {{- include "hlds.selectorLabels" . | nindent 4 }}

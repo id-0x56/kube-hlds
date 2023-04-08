@@ -33,20 +33,36 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              /hlds_l/hlds_run -game {{ .Values.hlds.game }} -nomaster -insecure -pingboost 1 +map {{ .Values.hlds.map }} +maxplayers {{ .Values.hlds.maxplayers }} +rcon_password $(rcon_password)
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           livenessProbe:
-            httpGet:
-              path: /
-              port: http
+            exec:
+              command: [ "/bin/sh", "-c", "nc -uz 127.0.0.1 {{ .Values.service.port }}" ]
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            exec:
+              command: [ "/bin/sh", "-c", "nc -uz 127.0.0.1 {{ .Values.service.port }}" ]
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: rcon_password
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "hlds.fullname" . }}
+                  key: rcon_password
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
