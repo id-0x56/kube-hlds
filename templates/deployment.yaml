@@ -38,6 +38,9 @@ spec:
             - -c
             - |
               set -e
+
+              sed -i 's|\"newbie\" \"password\"|\"$(amxmodx_username)\" \"$(amxmodx_password)\"|' /hlds_l/cstrike/addons/amxmodx/configs/users.ini
+              
               /hlds_l/hlds_run -game {{ .Values.hlds.game }} -nomaster -insecure -pingboost 1 +map {{ .Values.hlds.map }} +maxplayers {{ .Values.hlds.maxplayers }} +rcon_password $(rcon_password)
           ports:
             - name: http
@@ -63,6 +66,16 @@ spec:
                 secretKeyRef:
                   name: {{ include "hlds.fullname" . }}
                   key: rcon_password
+            - name: amxmodx_username
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "hlds.fullname" . }}-amxmodx
+                  key: amxmodx_username
+            - name: amxmodx_password
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "hlds.fullname" . }}-amxmodx
+                  key: amxmodx_password
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

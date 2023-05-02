@@ -106,3 +106,7 @@ hlds:
   map: de_dust2
   maxplayers: 12
   rcon_password: "password"
+
+  amxmodx:
+    username: "newbie"
+    password: "password"
