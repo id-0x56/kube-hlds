@@ -39,7 +39,7 @@ spec:
             - |
               set -e
 
-              sed -i 's|\"newbie\" \"password\"|\"$(amxmodx_username)\" \"$(amxmodx_password)\"|' /hlds_l/cstrike/addons/amxmodx/configs/users.ini
+              sed -i 's|\"newbie\" \"password\"|\"$(amxmodx_username)\" \"$(amxmodx_password)\"|' /hlds_l/{{ .Values.hlds.game }}/addons/amxmodx/configs/users.ini
               
               /hlds_l/hlds_run -game {{ .Values.hlds.game }} -nomaster -insecure -pingboost 1 +map {{ .Values.hlds.map }} +maxplayers {{ .Values.hlds.maxplayers }} +rcon_password $(rcon_password)
           ports:
