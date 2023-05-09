@@ -55,5 +55,5 @@ WORKDIR /hlds_l
 # docker build --no-cache -t 00x56/kubernetes-hlds:latest .
 # docker push 00x56/kubernetes-hlds:latest
 
-# docker run --rm --interactive --tty --workdir /hlds_l -p 27015:27015/tcp -p 27015:27015/udp 00x56/kubernetes-hlds /bin/bash
+# docker run --rm --interactive --tty --workdir /hlds_l --publish 27015:27015/tcp --publish 27015:27015/udp 00x56/kubernetes-hlds /bin/bash
 # docker exec --interactive --tty 7809913082a3 /bin/bash
