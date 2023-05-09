@@ -30,7 +30,7 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 
 RUN apt update \
-    && apt install -y ca-certificates lib32gcc-s1 \
+    && apt install -y ca-certificates lib32gcc-s1 netcat \
     && rm -rf /var/lib/apt/lists/*
 
 COPY bin/hlds_l /hlds_l
